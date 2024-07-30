@@ -40,7 +40,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public String loginUser(@RequestBody LoginRequest loginRequest) {
+    public String loginUser(@Valid @RequestBody LoginRequest loginRequest) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         loginRequest.getUsername(), loginRequest.getPassword()));
