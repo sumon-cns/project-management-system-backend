@@ -1,5 +1,6 @@
 package com.cnsbd.pms.auth;
 
+import com.cnsbd.pms.exceptionhandler.UsernameNotAvailableException;
 import com.cnsbd.pms.pmuser.PmUser;
 import com.cnsbd.pms.pmuser.PmUserDetailsService;
 import com.cnsbd.pms.pmuser.PmUserRepository;

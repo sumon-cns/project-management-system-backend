@@ -1,7 +1,5 @@
 package com.cnsbd.pms.exceptionhandler;
 
-import com.cnsbd.pms.auth.UsernameNotAvailableException;
-
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.http.HttpStatus;
@@ -31,6 +29,12 @@ public class GlobalExceptionHandler {
     public ResponseEntity<?> handleUsernameNotAvailableException(UsernameNotAvailableException e) {
         log.info("UsernameNotAvailableException: {}", e.getMessage(), e);
         return ResponseEntity.status(HttpStatusCode.valueOf(400)).body("Username not available");
+    }
+
+    @ExceptionHandler(BadRequestException.class)
+    public ResponseEntity<?> handleBadRequestException(BadRequestException e) {
+        log.info("BadRequestException: {}", e.getMessage(), e);
+        return ResponseEntity.status(HttpStatusCode.valueOf(400)).body(e.getMessage());
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)

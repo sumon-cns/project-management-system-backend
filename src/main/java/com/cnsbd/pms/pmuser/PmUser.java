@@ -1,7 +1,13 @@
 package com.cnsbd.pms.pmuser;
 
+import com.cnsbd.pms.project.Project;
+
 import jakarta.persistence.*;
+
 import lombok.Data;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @Entity
@@ -23,4 +29,7 @@ public class PmUser {
 
     @Column(name = "password")
     private String password;
+
+    @ManyToMany(mappedBy = "members")
+    private List<Project> projects = new ArrayList<>();
 }
