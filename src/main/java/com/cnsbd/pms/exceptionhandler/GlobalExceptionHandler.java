@@ -13,7 +13,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(AuthenticationException.class)
     public ResponseEntity<?> handleAuthenticationException(AuthenticationException e) {
         log.info("AuthenticationException: {}", e.getMessage(), e);
-        return ResponseEntity.status(HttpStatusCode.valueOf(401))
+        return ResponseEntity.status(HttpStatusCode.valueOf(400))
                 .body("Invalid username or password");
     }
 }
