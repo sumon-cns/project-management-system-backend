@@ -5,8 +5,11 @@ import com.cnsbd.pms.pmuser.PmUserDetailsService;
 import com.cnsbd.pms.pmuser.PmUserRepository;
 import com.cnsbd.pms.util.JwtUtil;
 
+import jakarta.validation.Valid;
+
 import lombok.RequiredArgsConstructor;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -23,16 +26,21 @@ public class AuthController {
     private final PmUserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
+    private final ModelMapper modelMapper;
 
     @PostMapping("/register")
-    public String registerUser(@RequestBody PmUser user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        userRepository.save(user);
+    public String registerUser(@Valid @RequestBody RegRequest request) {
+        if (userRepository.existsByUsername(request.getUsername())) {
+            throw new UsernameNotAvailableException("Username is not available!");
+        }
+        request.setPassword(passwordEncoder.encode(request.getPassword()));
+        PmUser pmUser = modelMapper.map(request, PmUser.class);
+        userRepository.save(pmUser);
         return "Registration Successful";
     }
 
     @PostMapping("/login")
-    public String loginUser(@RequestBody LoginRequest loginRequest) throws Exception {
+    public String loginUser(@RequestBody LoginRequest loginRequest) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         loginRequest.getUsername(), loginRequest.getPassword()));
