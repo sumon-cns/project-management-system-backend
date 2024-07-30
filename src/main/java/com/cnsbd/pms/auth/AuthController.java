@@ -41,11 +41,20 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public String loginUser(@Valid @RequestBody LoginRequest loginRequest) {
+    public LoginResponse loginUser(@Valid @RequestBody LoginRequest loginRequest) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         loginRequest.getUsername(), loginRequest.getPassword()));
         UserDetails userDetails = userDetailsService.loadUserByUsername(loginRequest.getUsername());
-        return jwtUtil.generateToken(userDetails);
+        String token = jwtUtil.generateToken(userDetails);
+
+        PmUser pmUser = userRepository.findByUsername(loginRequest.getUsername()).orElseThrow();
+
+        return new LoginResponse(
+                pmUser.getId(),
+                token,
+                pmUser.getUsername(),
+                pmUser.getEmail(),
+                pmUser.getFullName());
     }
 }
