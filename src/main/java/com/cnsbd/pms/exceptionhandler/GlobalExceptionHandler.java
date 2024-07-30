@@ -51,4 +51,10 @@ public class GlobalExceptionHandler {
                         });
         return errors;
     }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<?> handleException(Exception e) {
+        log.info("Exception: {}", e.getMessage(), e);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+    }
 }
