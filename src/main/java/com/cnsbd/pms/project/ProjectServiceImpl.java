@@ -4,6 +4,7 @@ import com.cnsbd.pms.exceptionhandler.BadRequestException;
 import com.cnsbd.pms.exceptionhandler.ProjectNotFoundException;
 import com.cnsbd.pms.pmuser.PmUser;
 
+import com.cnsbd.pms.pmuser.PmUserDto;
 import lombok.RequiredArgsConstructor;
 
 import org.modelmapper.ModelMapper;
@@ -148,8 +149,15 @@ public class ProjectServiceImpl implements ProjectService {
         dto.setStartDateTime(project.getStartDateTime());
         dto.setEndDateTime(project.getEndDateTime());
 
+        dto.setOwner(modelMapper.map(project.getOwner(), PmUserDto.class));
+
         dto.setOwnerId(project.getOwner().getId());
         dto.setMemberIds(project.getMembers().stream().map(PmUser::getId).toList());
+
+        dto.setMembers(
+                project.getMembers().stream()
+                        .map(user -> modelMapper.map(user, PmUserDto.class))
+                        .toList());
         return dto;
     }
 }

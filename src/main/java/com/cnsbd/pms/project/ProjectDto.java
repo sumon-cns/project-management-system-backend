@@ -1,5 +1,6 @@
 package com.cnsbd.pms.project;
 
+import com.cnsbd.pms.pmuser.PmUserDto;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -22,10 +23,14 @@ public class ProjectDto {
     @NotNull(message = "owner id is required")
     private Integer ownerId;
 
+    private PmUserDto owner;
+
     @NotNull(message = "status is required")
     private ProjectStatus projectStatus;
 
     private LocalDateTime startDateTime;
     private LocalDateTime endDateTime;
     private List<Integer> memberIds;
+
+    private List<PmUserDto> members;
 }
