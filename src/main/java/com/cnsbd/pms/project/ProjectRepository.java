@@ -13,7 +13,7 @@ public interface ProjectRepository extends JpaRepository<Project, Integer> {
     @Query(
             value =
                     """
-                            SELECT p.*
+                            SELECT distinct p.*
                             FROM projects p
                             LEFT JOIN project_pm_user pu ON p.id = pu.project_id
                             WHERE p.owner_id = :userId OR pu.pm_user_id = :userId
@@ -24,7 +24,7 @@ public interface ProjectRepository extends JpaRepository<Project, Integer> {
     @Query(
             value =
                     """
-                            SELECT p.*
+                            SELECT distinct p.*
                                             FROM projects p
                                             LEFT JOIN project_pm_user pu ON p.id = pu.project_id
                                             WHERE (p.owner_id = :userId OR pu.pm_user_id = :userId)
