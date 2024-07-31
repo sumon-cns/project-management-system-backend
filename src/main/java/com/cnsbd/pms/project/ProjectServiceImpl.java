@@ -124,9 +124,9 @@ public class ProjectServiceImpl implements ProjectService {
         if (request.getProjectStatus() != null) {
             project.setProjectStatus(request.getProjectStatus());
         }
-        if (request.getStartDateTime() != null) {
-            project.setStartDateTime(request.getStartDateTime());
-        }
+
+        project.setStartDateTime(request.getStartDateTime());
+
         if (request.getEndDateTime() != null) {
             project.setEndDateTime(request.getEndDateTime());
         }
