@@ -9,4 +9,6 @@ public interface PmUserService {
     Optional<PmUser> getPmUser(String username);
 
     List<PmUserDto> getAllUsers();
+
+    List<PmUserDto> getAvailableUsers(Integer projectId);
 }

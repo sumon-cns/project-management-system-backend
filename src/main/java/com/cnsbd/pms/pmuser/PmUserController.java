@@ -1,7 +1,9 @@
 package com.cnsbd.pms.pmuser;
 
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -16,5 +18,10 @@ public class PmUserController {
     @GetMapping(value = "/users")
     public List<PmUserDto> getUsers() {
         return pmUserService.getAllUsers();
+    }
+
+    @GetMapping(value = "/projects/{projectId}/available-users")
+    public List<PmUserDto> getAvailableUsers(@PathVariable int projectId) {
+        return pmUserService.getAvailableUsers(projectId);
     }
 }
