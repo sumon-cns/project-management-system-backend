@@ -15,4 +15,6 @@ public interface ProjectService {
     void deleteProject(Integer projectId);
 
     void updateProject(Integer projectId, ProjectUpdateRequest request);
+
+    ProjectDto getProject(Integer projectId);
 }

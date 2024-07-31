@@ -52,4 +52,9 @@ public class ProjectController {
         projectService.updateProject(projectId, request);
         return "Project updated successfully";
     }
+
+    @GetMapping(value = "/projects/{projectId}")
+    public ProjectDto getProject(@PathVariable Integer projectId) {
+        return projectService.getProject(projectId);
+    }
 }

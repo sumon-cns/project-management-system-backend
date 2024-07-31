@@ -132,6 +132,17 @@ public class ProjectServiceImpl implements ProjectService {
         projectRepository.save(project);
     }
 
+    @Override
+    public ProjectDto getProject(Integer projectId) {
+        return projectRepository
+                .findById(projectId)
+                .map(this::mapProjectToDto)
+                .orElseThrow(
+                        () ->
+                                new ProjectNotFoundException(
+                                        "No project found with id: " + projectId));
+    }
+
     private ProjectDto mapProjectToDto(Project project) {
         ProjectDto dto = modelMapper.map(project, ProjectDto.class);
         dto.setStartDateTime(project.getStartDateTime());
