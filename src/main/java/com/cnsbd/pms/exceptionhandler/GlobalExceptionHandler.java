@@ -57,4 +57,10 @@ public class GlobalExceptionHandler {
         log.info("Exception: {}", e.getMessage(), e);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
     }
+
+    @ExceptionHandler(OperationNotAllowedException.class)
+    public ResponseEntity<?> handleOperationNotAllowedException(OperationNotAllowedException e) {
+        log.info("OperationNotAllowedException: {}", e.getMessage(), e);
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
+    }
 }

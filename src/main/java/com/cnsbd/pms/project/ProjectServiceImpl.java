@@ -1,6 +1,7 @@
 package com.cnsbd.pms.project;
 
 import com.cnsbd.pms.exceptionhandler.BadRequestException;
+import com.cnsbd.pms.exceptionhandler.OperationNotAllowedException;
 import com.cnsbd.pms.exceptionhandler.ProjectNotFoundException;
 import com.cnsbd.pms.exceptionhandler.UserNotFoundException;
 import com.cnsbd.pms.pmuser.PmUser;
@@ -15,6 +16,8 @@ import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -109,13 +112,15 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public void deleteProject(Integer projectId) {
-        projectRepository.delete(
+        Project project =
                 projectRepository
                         .findById(projectId)
                         .orElseThrow(
                                 () ->
                                         new BadRequestException(
-                                                "No project found with id: " + projectId)));
+                                                "No project found with id: " + projectId));
+        allowProjectOwnerToModifyOrDeleteProject(project);
+        projectRepository.delete(project);
     }
 
     @Override
@@ -127,6 +132,8 @@ public class ProjectServiceImpl implements ProjectService {
                                 () ->
                                         new ProjectNotFoundException(
                                                 "No project found with id: " + projectId));
+        allowProjectOwnerToModifyOrDeleteProject(project);
+
         if (StringUtils.hasText(request.getName())) {
             project.setName(request.getName());
         }
@@ -232,5 +239,13 @@ public class ProjectServiceImpl implements ProjectService {
                                         .toList()));
 
         return dto;
+    }
+
+    private void allowProjectOwnerToModifyOrDeleteProject(Project project) {
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        PmUser loggedInUser = pmUserRepository.findByUsername(user.getUsername()).orElse(null);
+        if (loggedInUser == null || !loggedInUser.getId().equals(project.getOwner().getId())) {
+            throw new OperationNotAllowedException("You are not allowed to do this operation!");
+        }
     }
 }
