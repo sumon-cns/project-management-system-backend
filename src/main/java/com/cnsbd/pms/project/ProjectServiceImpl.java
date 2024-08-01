@@ -81,8 +81,18 @@ public class ProjectServiceImpl implements ProjectService {
         if (existingUsersCount + users.size() > 5) {
             throw new BadRequestException("Can't add more than 5 users to a project.");
         }
+        User principal =
+                (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        PmUser pmUser = pmUserRepository.findByUsername(principal.getUsername()).orElse(null);
+        if (pmUser != null && users.contains(pmUser.getId())) {
+            throw new BadRequestException("Can't add owner as a member of this project.");
+        }
+
         users.forEach(
                 id -> {
+                    if (project.getMembers().stream().anyMatch(it -> it.getId().equals(id))) {
+                        throw new BadRequestException("Can't add existing member to this project.");
+                    }
                     PmUser user = new PmUser();
                     user.setId(id);
                     project.getMembers().add(user);
