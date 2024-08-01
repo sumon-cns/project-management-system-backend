@@ -28,7 +28,8 @@ public interface ProjectRepository extends JpaRepository<Project, Integer> {
                                             FROM projects p
                                             LEFT JOIN project_pm_user pu ON p.id = pu.project_id
                                             WHERE (p.owner_id = :userId OR pu.pm_user_id = :userId)
-                                              and p.start_date_time between :start and :end
+                                              AND (p.start_date_time BETWEEN :start AND :end
+                                               OR p.end_date_time BETWEEN :start AND :end)
                             """,
             nativeQuery = true)
     List<Project> findAllProjectsByUserIdAndBetweenDate(
