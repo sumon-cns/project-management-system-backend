@@ -2,26 +2,38 @@ package com.cnsbd.pms.project;
 
 import com.cnsbd.pms.exceptionhandler.BadRequestException;
 import com.cnsbd.pms.exceptionhandler.ProjectNotFoundException;
+import com.cnsbd.pms.exceptionhandler.UserNotFoundException;
 import com.cnsbd.pms.pmuser.PmUser;
-
 import com.cnsbd.pms.pmuser.PmUserDto;
+import com.cnsbd.pms.pmuser.PmUserRepository;
+
+import lombok.Cleanup;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
+
+import net.sf.jasperreports.engine.*;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.io.InputStream;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjusters;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
 public class ProjectServiceImpl implements ProjectService {
     private final ProjectRepository projectRepository;
     private final ModelMapper modelMapper;
+    private final PmUserRepository pmUserRepository;
 
     @Override
     public void createProject(ProjectDto dto) {
@@ -144,6 +156,45 @@ public class ProjectServiceImpl implements ProjectService {
                                         "No project found with id: " + projectId));
     }
 
+    @Override
+    @SneakyThrows
+    public byte[] getReport(Integer userId, LocalDateTime fromDate, LocalDateTime toDate) {
+        PmUserDto owner =
+                pmUserRepository
+                        .findById(userId)
+                        .map(u -> modelMapper.map(u, PmUserDto.class))
+                        .orElseThrow(
+                                () ->
+                                        new UserNotFoundException(
+                                                "User not found with id: " + userId));
+        List<ProjectReportDto> projects =
+                getAllProjects(userId, fromDate, toDate).stream()
+                        .map(this::mapProjectDtoToReportDto)
+                        .toList();
+        JRBeanCollectionDataSource datasource = new JRBeanCollectionDataSource(projects);
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("projects", datasource);
+
+        parameters.put(
+                "owner",
+                Map.of(
+                        "name",
+                        owner.getFullName(),
+                        "email",
+                        owner.getEmail(),
+                        "username",
+                        owner.getUsername()));
+        parameters.put("fromDate", fromDate.format(DateTimeFormatter.ofPattern("dd-MMM-yyyy")));
+        parameters.put("toDate", toDate.format(DateTimeFormatter.ofPattern("dd-MMM-yyyy")));
+
+        @Cleanup InputStream is = this.getClass().getResourceAsStream("/report/template.jrxml");
+
+        JasperReport jasperReport = JasperCompileManager.compileReport(is);
+        JasperPrint jasperPrint =
+                JasperFillManager.fillReport(jasperReport, parameters, new JREmptyDataSource());
+        return JasperExportManager.exportReportToPdf(jasperPrint);
+    }
+
     private ProjectDto mapProjectToDto(Project project) {
         ProjectDto dto = modelMapper.map(project, ProjectDto.class);
         dto.setStartDateTime(project.getStartDateTime());
@@ -158,6 +209,28 @@ public class ProjectServiceImpl implements ProjectService {
                 project.getMembers().stream()
                         .map(user -> modelMapper.map(user, PmUserDto.class))
                         .toList());
+        return dto;
+    }
+
+    private ProjectReportDto mapProjectDtoToReportDto(ProjectDto projectDto) {
+        ProjectReportDto dto = modelMapper.map(projectDto, ProjectReportDto.class);
+        dto.setOwner(projectDto.getOwner().getFullName());
+        dto.setStatus(projectDto.getProjectStatus().name());
+
+        dto.setStartDateTime(
+                projectDto.getStartDateTime().format(DateTimeFormatter.ofPattern("dd-MMM-yyyy")));
+        dto.setEndDateTime(
+                projectDto.getEndDateTime().format(DateTimeFormatter.ofPattern("dd-MMM-yyyy")));
+
+        dto.setMembers(
+                projectDto.getMembers().isEmpty()
+                        ? "No member"
+                        : String.join(
+                                ",",
+                                projectDto.getMembers().stream()
+                                        .map(PmUserDto::getUsername)
+                                        .toList()));
+
         return dto;
     }
 }

@@ -5,9 +5,14 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @RestController
@@ -59,5 +64,27 @@ public class ProjectController {
     @GetMapping(value = "/projects/{projectId}")
     public ProjectDto getProject(@PathVariable Integer projectId) {
         return projectService.getProject(projectId);
+    }
+
+    @GetMapping(value = "/users/{userId}/projects/report")
+    public ResponseEntity<byte[]> getProjectReport(
+            @PathVariable Integer userId,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+                    LocalDateTime fromDate,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+                    LocalDateTime toDate) {
+        byte[] reportBytes = projectService.getReport(userId, fromDate, toDate);
+
+        String filename =
+                "projects_report_"
+                        + LocalDateTime.now()
+                                .format(DateTimeFormatter.ofPattern("yyyy_MM_dd_HH_mm_ss"))
+                        + ".pdf";
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_PDF);
+        headers.setContentDispositionFormData("attachment", filename);
+        headers.setContentLength(reportBytes.length);
+        return new ResponseEntity<>(reportBytes, headers, HttpStatus.OK);
     }
 }

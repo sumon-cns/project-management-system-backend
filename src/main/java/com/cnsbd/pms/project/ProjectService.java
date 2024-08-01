@@ -17,4 +17,6 @@ public interface ProjectService {
     void updateProject(Integer projectId, ProjectUpdateRequest request);
 
     ProjectDto getProject(Integer projectId);
+
+    byte[] getReport(Integer userId, LocalDateTime fromDate, LocalDateTime toDate);
 }
