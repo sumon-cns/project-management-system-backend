@@ -1,5 +1,7 @@
 package com.cnsbd.pms.project;
 
+import com.cnsbd.pms.pmuser.PmUser;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -36,4 +38,25 @@ public interface ProjectRepository extends JpaRepository<Project, Integer> {
             @Param("userId") Integer userId,
             @Param("start") LocalDateTime start,
             @Param("end") LocalDateTime end);
+
+    List<Project> findAllByMembersContainingOrOwnerIsAndStartDateTimeBetween(
+            PmUser member, PmUser owner, LocalDateTime from, LocalDateTime to);
+
+    @Query(
+            value =
+                    """
+            SELECT pr.*
+            FROM projects pr
+            WHERE (pr.owner_id = :userId
+                OR :userId IN (SELECT pu.pm_user_id
+                               FROM project_pm_user pu
+                               WHERE pr.id = pu.project_id))
+              AND (pr.start_date_time BETWEEN :from AND :to
+                OR pr.end_date_time BETWEEN :from AND :to)
+            """,
+            nativeQuery = true)
+    List<Project> findAllProjectsByUserAndBetweenDateV1(
+            @Param("userId") Integer userId,
+            @Param("from") LocalDateTime from,
+            @Param("to") LocalDateTime to);
 }

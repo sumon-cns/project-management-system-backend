@@ -5,6 +5,7 @@ import com.cnsbd.pms.project.Project;
 import jakarta.persistence.*;
 
 import lombok.Data;
+import lombok.ToString;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +13,7 @@ import java.util.List;
 @Data
 @Entity
 @Table(name = "pm_users")
+@ToString(exclude = "projects")
 public class PmUser {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
