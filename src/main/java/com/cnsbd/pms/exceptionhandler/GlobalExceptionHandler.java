@@ -63,4 +63,10 @@ public class GlobalExceptionHandler {
         log.info("OperationNotAllowedException: {}", e.getMessage(), e);
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
     }
+
+    @ExceptionHandler(ProjectNotFoundException.class)
+    public ResponseEntity<?> handleProjectNotFoundException(ProjectNotFoundException e) {
+        log.info("ProjectNotFoundException: {}", e.getMessage(), e);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+    }
 }
