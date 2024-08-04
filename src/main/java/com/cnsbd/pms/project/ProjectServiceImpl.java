@@ -243,7 +243,7 @@ public class ProjectServiceImpl implements ProjectService {
                 projectDto.getMembers().isEmpty()
                         ? "No member"
                         : String.join(
-                                ",",
+                                ", ",
                                 projectDto.getMembers().stream()
                                         .map(PmUserDto::getUsername)
                                         .toList()));
