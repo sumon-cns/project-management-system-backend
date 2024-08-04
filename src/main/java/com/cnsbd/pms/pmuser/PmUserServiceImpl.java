@@ -1,6 +1,6 @@
 package com.cnsbd.pms.pmuser;
 
-import com.cnsbd.pms.exceptionhandler.ProjectNotFoundException;
+import com.cnsbd.pms.exception.ProjectNotFoundException;
 import com.cnsbd.pms.project.Project;
 import com.cnsbd.pms.project.ProjectRepository;
 

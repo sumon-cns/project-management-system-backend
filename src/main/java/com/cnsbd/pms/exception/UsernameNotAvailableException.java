@@ -1,4 +1,4 @@
-package com.cnsbd.pms.exceptionhandler;
+package com.cnsbd.pms.exception;
 
 public class UsernameNotAvailableException extends RuntimeException {
     public UsernameNotAvailableException(String msg) {

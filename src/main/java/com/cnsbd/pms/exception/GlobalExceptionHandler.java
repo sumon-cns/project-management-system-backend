@@ -1,4 +1,4 @@
-package com.cnsbd.pms.exceptionhandler;
+package com.cnsbd.pms.exception;
 
 import lombok.extern.slf4j.Slf4j;
 

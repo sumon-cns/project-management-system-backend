@@ -1,9 +1,9 @@
 package com.cnsbd.pms.project;
 
-import com.cnsbd.pms.exceptionhandler.BadRequestException;
-import com.cnsbd.pms.exceptionhandler.OperationNotAllowedException;
-import com.cnsbd.pms.exceptionhandler.ProjectNotFoundException;
-import com.cnsbd.pms.exceptionhandler.UserNotFoundException;
+import com.cnsbd.pms.exception.BadRequestException;
+import com.cnsbd.pms.exception.OperationNotAllowedException;
+import com.cnsbd.pms.exception.ProjectNotFoundException;
+import com.cnsbd.pms.exception.UserNotFoundException;
 import com.cnsbd.pms.pmuser.PmUser;
 import com.cnsbd.pms.pmuser.PmUserDto;
 import com.cnsbd.pms.pmuser.PmUserRepository;
