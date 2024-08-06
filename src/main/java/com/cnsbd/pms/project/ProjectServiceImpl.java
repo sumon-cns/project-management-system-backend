@@ -230,16 +230,21 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     private ProjectReportDto mapProjectDtoToReportDto(ProjectDto projectDto) {
-        ProjectReportDto dto = modelMapper.map(projectDto, ProjectReportDto.class);
-        dto.setOwner(projectDto.getOwner().getFullName());
-        dto.setStatus(projectDto.getProjectStatus().name());
-
-        dto.setStartDateTime(
-                projectDto.getStartDateTime().format(DateTimeFormatter.ofPattern("dd-MMM-yyyy")));
-        dto.setEndDateTime(
+        ProjectReportDto reportDto = modelMapper.map(projectDto, ProjectReportDto.class);
+        reportDto.setOwner(projectDto.getOwner().getFullName());
+        reportDto.setStatus(projectDto.getProjectStatus().name());
+        if (projectDto.getStartDateTime() != null) {
+            reportDto.setStartDateTime(
+                    projectDto
+                            .getStartDateTime()
+                            .format(DateTimeFormatter.ofPattern("dd-MMM-yyyy")));
+        } else {
+            reportDto.setStartDateTime("--");
+        }
+        reportDto.setEndDateTime(
                 projectDto.getEndDateTime().format(DateTimeFormatter.ofPattern("dd-MMM-yyyy")));
 
-        dto.setMembers(
+        reportDto.setMembers(
                 projectDto.getMembers().isEmpty()
                         ? "No member"
                         : String.join(
@@ -248,7 +253,7 @@ public class ProjectServiceImpl implements ProjectService {
                                         .map(PmUserDto::getUsername)
                                         .toList()));
 
-        return dto;
+        return reportDto;
     }
 
     private void allowProjectOwnerToModifyOrDeleteProject(Project project) {
