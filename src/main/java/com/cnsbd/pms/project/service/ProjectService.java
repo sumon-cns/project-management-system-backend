@@ -1,4 +1,7 @@
-package com.cnsbd.pms.project;
+package com.cnsbd.pms.project.service;
+
+import com.cnsbd.pms.project.dto.ProjectUpdateRequest;
+import com.cnsbd.pms.project.dto.ProjectDto;
 
 import java.time.LocalDateTime;
 import java.util.List;

@@ -1,6 +1,7 @@
-package com.cnsbd.pms.project;
+package com.cnsbd.pms.project.dto;
 
-import com.cnsbd.pms.pmuser.PmUserDto;
+import com.cnsbd.pms.pmuser.dto.PmUserDto;
+import com.cnsbd.pms.project.enums.ProjectStatus;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;

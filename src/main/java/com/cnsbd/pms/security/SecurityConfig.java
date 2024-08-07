@@ -1,6 +1,6 @@
 package com.cnsbd.pms.security;
 
-import com.cnsbd.pms.pmuser.PmUserDetailsService;
+import com.cnsbd.pms.pmuser.service.PmUserDetailsService;
 import com.cnsbd.pms.util.JwtUtil;
 
 import lombok.RequiredArgsConstructor;

@@ -1,6 +1,7 @@
-package com.cnsbd.pms.project;
+package com.cnsbd.pms.project.entity;
 
-import com.cnsbd.pms.pmuser.PmUser;
+import com.cnsbd.pms.pmuser.entity.PmUser;
+import com.cnsbd.pms.project.enums.ProjectStatus;
 import jakarta.persistence.*;
 
 import lombok.Data;

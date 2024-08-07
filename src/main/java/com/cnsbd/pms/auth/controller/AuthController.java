@@ -1,9 +1,12 @@
-package com.cnsbd.pms.auth;
+package com.cnsbd.pms.auth.controller;
 
+import com.cnsbd.pms.auth.dto.LoginRequest;
+import com.cnsbd.pms.auth.dto.LoginResponse;
+import com.cnsbd.pms.auth.dto.RegRequest;
 import com.cnsbd.pms.exception.UsernameNotAvailableException;
-import com.cnsbd.pms.pmuser.PmUser;
-import com.cnsbd.pms.pmuser.PmUserDetailsService;
-import com.cnsbd.pms.pmuser.PmUserRepository;
+import com.cnsbd.pms.pmuser.entity.PmUser;
+import com.cnsbd.pms.pmuser.service.PmUserDetailsService;
+import com.cnsbd.pms.pmuser.repository.PmUserRepository;
 import com.cnsbd.pms.util.JwtUtil;
 
 import jakarta.validation.Valid;

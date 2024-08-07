@@ -1,10 +1,10 @@
 package com.cnsbd.pms.project;
 
-import static org.junit.jupiter.api.Assertions.*;
+import com.cnsbd.pms.pmuser.entity.PmUser;
+import com.cnsbd.pms.pmuser.repository.PmUserRepository;
 
-import com.cnsbd.pms.pmuser.PmUser;
-import com.cnsbd.pms.pmuser.PmUserRepository;
-
+import com.cnsbd.pms.project.entity.Project;
+import com.cnsbd.pms.project.repository.ProjectRepository;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

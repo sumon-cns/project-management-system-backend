@@ -1,4 +1,4 @@
-package com.cnsbd.pms.project;
+package com.cnsbd.pms.project.enums;
 
 import lombok.Getter;
 

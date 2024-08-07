@@ -1,5 +1,6 @@
-package com.cnsbd.pms.pmuser;
+package com.cnsbd.pms.pmuser.service;
 
+import com.cnsbd.pms.pmuser.entity.PmUser;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.security.core.userdetails.User;

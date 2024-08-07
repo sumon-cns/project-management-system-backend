@@ -1,13 +1,19 @@
-package com.cnsbd.pms.project;
+package com.cnsbd.pms.project.service.impl;
 
 import com.cnsbd.pms.exception.BadRequestException;
 import com.cnsbd.pms.exception.OperationNotAllowedException;
 import com.cnsbd.pms.exception.ProjectNotFoundException;
 import com.cnsbd.pms.exception.UserNotFoundException;
-import com.cnsbd.pms.pmuser.PmUser;
-import com.cnsbd.pms.pmuser.PmUserDto;
-import com.cnsbd.pms.pmuser.PmUserRepository;
+import com.cnsbd.pms.pmuser.entity.PmUser;
+import com.cnsbd.pms.pmuser.dto.PmUserDto;
+import com.cnsbd.pms.pmuser.repository.PmUserRepository;
 
+import com.cnsbd.pms.project.dto.ProjectUpdateRequest;
+import com.cnsbd.pms.project.dto.ProjectDto;
+import com.cnsbd.pms.project.dto.ProjectReportDto;
+import com.cnsbd.pms.project.entity.Project;
+import com.cnsbd.pms.project.repository.ProjectRepository;
+import com.cnsbd.pms.project.service.ProjectService;
 import lombok.Cleanup;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;

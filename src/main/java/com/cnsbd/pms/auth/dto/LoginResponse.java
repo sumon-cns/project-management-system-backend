@@ -1,4 +1,4 @@
-package com.cnsbd.pms.auth;
+package com.cnsbd.pms.auth.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

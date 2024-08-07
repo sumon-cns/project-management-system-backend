@@ -1,4 +1,4 @@
-package com.cnsbd.pms.pmuser;
+package com.cnsbd.pms.pmuser.dto;
 
 import lombok.Data;
 

@@ -1,6 +1,6 @@
-package com.cnsbd.pms.pmuser;
+package com.cnsbd.pms.pmuser.entity;
 
-import com.cnsbd.pms.project.Project;
+import com.cnsbd.pms.project.entity.Project;
 
 import jakarta.persistence.*;
 

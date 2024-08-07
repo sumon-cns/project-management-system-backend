@@ -1,5 +1,6 @@
-package com.cnsbd.pms.project;
+package com.cnsbd.pms.project.dto;
 
+import com.cnsbd.pms.project.enums.ProjectStatus;
 import lombok.Data;
 
 import java.time.LocalDateTime;

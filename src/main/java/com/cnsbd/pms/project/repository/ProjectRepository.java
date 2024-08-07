@@ -1,7 +1,8 @@
-package com.cnsbd.pms.project;
+package com.cnsbd.pms.project.repository;
 
-import com.cnsbd.pms.pmuser.PmUser;
+import com.cnsbd.pms.pmuser.entity.PmUser;
 
+import com.cnsbd.pms.project.entity.Project;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

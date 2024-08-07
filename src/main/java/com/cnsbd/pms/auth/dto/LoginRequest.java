@@ -1,4 +1,4 @@
-package com.cnsbd.pms.auth;
+package com.cnsbd.pms.auth.dto;
 
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
