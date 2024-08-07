@@ -11,13 +11,13 @@ import io.swagger.v3.oas.annotations.security.SecurityScheme;
 @OpenAPIDefinition(
         info =
                 @Info(
-                        title = "Project Management application",
-                        description = "Manage projects",
+                        title = "Project Management System",
+                        description = "Manage projects easily",
                         version = "0.0.1-SNAPSHOT",
                         license =
                                 @License(
                                         name = "Apache 2.0",
-                                        url = "http://www.apache.org/licenses/LICENSE-2.0")),
+                                        url = "https://www.apache.org/licenses/LICENSE-2.0")),
         security = {@SecurityRequirement(name = "bearerAuth")})
 @SecurityScheme(
         name = "bearerAuth",
