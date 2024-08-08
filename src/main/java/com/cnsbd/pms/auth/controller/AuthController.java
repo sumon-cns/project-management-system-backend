@@ -5,9 +5,12 @@ import com.cnsbd.pms.auth.dto.LoginResponse;
 import com.cnsbd.pms.auth.dto.RegRequest;
 import com.cnsbd.pms.exception.UsernameNotAvailableException;
 import com.cnsbd.pms.pmuser.entity.PmUser;
-import com.cnsbd.pms.pmuser.service.PmUserDetailsService;
 import com.cnsbd.pms.pmuser.repository.PmUserRepository;
+import com.cnsbd.pms.pmuser.service.PmUserDetailsService;
 import com.cnsbd.pms.util.JwtUtil;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 import jakarta.validation.Valid;
 
@@ -23,6 +26,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/v1")
 @RequiredArgsConstructor
+@Tag(name = "Auth Controller", description = "authentication related api(s)")
 public class AuthController {
 
     private final AuthenticationManager authenticationManager;
@@ -32,6 +36,9 @@ public class AuthController {
     private final JwtUtil jwtUtil;
     private final ModelMapper modelMapper;
 
+    @Operation(
+            summary = "Register for a new account",
+            description = "register a new user to the system")
     @PostMapping("/register")
     public String registerUser(@Valid @RequestBody RegRequest request) {
         if (userRepository.existsByUsername(request.getUsername())) {
@@ -43,6 +50,9 @@ public class AuthController {
         return "Registration Successful";
     }
 
+    @Operation(
+            summary = "Login",
+            description = "authenticate and generate a JWT token for the user")
     @PostMapping("/login")
     public LoginResponse loginUser(@Valid @RequestBody LoginRequest loginRequest) {
         authenticationManager.authenticate(
