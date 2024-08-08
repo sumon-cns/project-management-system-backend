@@ -1,6 +1,7 @@
 package com.cnsbd.pms.pmuser.repository;
 
 import com.cnsbd.pms.pmuser.entity.PmUser;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -48,4 +49,13 @@ public interface PmUserRepository extends JpaRepository<PmUser, Integer> {
                             """,
             nativeQuery = true)
     List<PmUser> findAvailableUsersV1(@Param("projectId") Integer projectId);
+
+    @Query(
+            value =
+                    """
+                            select u.* from pm_users u join project_pm_user ppu on u.id = ppu.pm_user_id
+                                       where ppu.project_id = :projectId
+                            """,
+            nativeQuery = true)
+    List<PmUser> findUsersByProjectId(@Param("projectId") Integer projectId);
 }

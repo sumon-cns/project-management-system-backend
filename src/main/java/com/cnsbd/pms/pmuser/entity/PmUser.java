@@ -1,19 +1,12 @@
 package com.cnsbd.pms.pmuser.entity;
 
-import com.cnsbd.pms.project.entity.Project;
-
 import jakarta.persistence.*;
 
 import lombok.Data;
-import lombok.ToString;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Data
 @Entity
 @Table(name = "pm_users")
-@ToString(exclude = "projects")
 public class PmUser {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,7 +24,4 @@ public class PmUser {
 
     @Column(name = "password")
     private String password;
-
-    @ManyToMany(mappedBy = "members")
-    private List<Project> projects = new ArrayList<>();
 }

@@ -2,8 +2,8 @@ package com.cnsbd.pms.pmuser.service.impl;
 
 import com.cnsbd.pms.exception.ProjectNotFoundException;
 import com.cnsbd.pms.pmuser.dto.PmUserDto;
-import com.cnsbd.pms.pmuser.repository.PmUserRepository;
 import com.cnsbd.pms.pmuser.entity.PmUser;
+import com.cnsbd.pms.pmuser.repository.PmUserRepository;
 import com.cnsbd.pms.pmuser.service.PmUserService;
 import com.cnsbd.pms.project.entity.Project;
 import com.cnsbd.pms.project.repository.ProjectRepository;
@@ -12,7 +12,6 @@ import lombok.RequiredArgsConstructor;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
@@ -43,16 +42,16 @@ public class PmUserServiceImpl implements PmUserService {
     }
 
     @Override
-    @Transactional
     public List<PmUserDto> getAvailableUsers(Integer projectId) {
         Project project =
                 projectRepository
                         .findById(projectId)
                         .orElseThrow(() -> new ProjectNotFoundException("Project not found"));
+        List<PmUser> existingUsers = pmUserRepository.findUsersByProjectId(projectId);
         List<PmUser> users =
                 pmUserRepository.findAll().stream()
                         .filter(u -> !Objects.equals(u.getId(), project.getOwner().getId()))
-                        .filter(u -> !project.getMembers().contains(u))
+                        .filter(u -> !existingUsers.contains(u))
                         .toList();
         return users.stream().map(u -> modelMapper.map(u, PmUserDto.class)).toList();
     }

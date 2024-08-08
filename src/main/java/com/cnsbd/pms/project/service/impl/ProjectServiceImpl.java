@@ -4,16 +4,16 @@ import com.cnsbd.pms.exception.BadRequestException;
 import com.cnsbd.pms.exception.OperationNotAllowedException;
 import com.cnsbd.pms.exception.ProjectNotFoundException;
 import com.cnsbd.pms.exception.UserNotFoundException;
-import com.cnsbd.pms.pmuser.entity.PmUser;
 import com.cnsbd.pms.pmuser.dto.PmUserDto;
+import com.cnsbd.pms.pmuser.entity.PmUser;
 import com.cnsbd.pms.pmuser.repository.PmUserRepository;
-
-import com.cnsbd.pms.project.dto.ProjectUpdateRequest;
 import com.cnsbd.pms.project.dto.ProjectDto;
 import com.cnsbd.pms.project.dto.ProjectReportDto;
+import com.cnsbd.pms.project.dto.ProjectUpdateRequest;
 import com.cnsbd.pms.project.entity.Project;
 import com.cnsbd.pms.project.repository.ProjectRepository;
 import com.cnsbd.pms.project.service.ProjectService;
+
 import lombok.Cleanup;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -25,6 +25,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.io.InputStream;
@@ -51,16 +52,6 @@ public class ProjectServiceImpl implements ProjectService {
         project.setStartDateTime(dto.getStartDateTime());
         project.setEndDateTime(dto.getEndDateTime());
 
-        if (dto.getMemberIds() != null) {
-            dto.getMemberIds().stream()
-                    .limit(5)
-                    .forEach(
-                            mId -> {
-                                PmUser user = new PmUser();
-                                user.setId(mId);
-                                project.getMembers().add(user);
-                            });
-        }
         PmUser owner = new PmUser();
         owner.setId(dto.getOwnerId());
         project.setOwner(owner);
@@ -74,6 +65,7 @@ public class ProjectServiceImpl implements ProjectService {
                 .toList();
     }
 
+    @Transactional
     @Override
     public void addUsers(Integer projectId, List<Integer> users) {
         Project project =
@@ -83,7 +75,7 @@ public class ProjectServiceImpl implements ProjectService {
                                 () ->
                                         new ProjectNotFoundException(
                                                 "No project found with id: " + projectId));
-        int existingUsersCount = project.getMembers().size();
+        int existingUsersCount = projectRepository.countExistingUsers(projectId);
         if (existingUsersCount + users.size() > 5) {
             throw new BadRequestException("Can't add more than 5 users to a project.");
         }
@@ -93,15 +85,13 @@ public class ProjectServiceImpl implements ProjectService {
         if (pmUser != null && users.contains(pmUser.getId())) {
             throw new BadRequestException("Can't add owner as a member of this project.");
         }
-
+        List<PmUser> existingUsers = pmUserRepository.findUsersByProjectId(projectId);
         users.forEach(
                 id -> {
-                    if (project.getMembers().stream().anyMatch(it -> it.getId().equals(id))) {
+                    if (existingUsers.stream().anyMatch(it -> it.getId().equals(id))) {
                         throw new BadRequestException("Can't add existing member to this project.");
                     }
-                    PmUser user = new PmUser();
-                    user.setId(id);
-                    project.getMembers().add(user);
+                    projectRepository.addUserToProject(projectId, id);
                 });
         projectRepository.save(project);
     }
@@ -127,6 +117,7 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
+    @Transactional
     public void deleteProject(Integer projectId) {
         Project project =
                 projectRepository
@@ -136,6 +127,7 @@ public class ProjectServiceImpl implements ProjectService {
                                         new BadRequestException(
                                                 "No project found with id: " + projectId));
         allowProjectOwnerToModifyOrDeleteProject(project);
+        projectRepository.deleteAllUsersFromProject(projectId);
         projectRepository.delete(project);
     }
 
@@ -226,10 +218,13 @@ public class ProjectServiceImpl implements ProjectService {
         dto.setOwner(modelMapper.map(project.getOwner(), PmUserDto.class));
 
         dto.setOwnerId(project.getOwner().getId());
-        dto.setMemberIds(project.getMembers().stream().map(PmUser::getId).toList());
+        dto.setMemberIds(
+                pmUserRepository.findUsersByProjectId(project.getId()).stream()
+                        .map(PmUser::getId)
+                        .toList());
 
         dto.setMembers(
-                project.getMembers().stream()
+                pmUserRepository.findUsersByProjectId(project.getId()).stream()
                         .map(user -> modelMapper.map(user, PmUserDto.class))
                         .toList());
         return dto;

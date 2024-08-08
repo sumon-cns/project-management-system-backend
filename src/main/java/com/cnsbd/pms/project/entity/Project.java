@@ -2,13 +2,12 @@ package com.cnsbd.pms.project.entity;
 
 import com.cnsbd.pms.pmuser.entity.PmUser;
 import com.cnsbd.pms.project.enums.ProjectStatus;
+
 import jakarta.persistence.*;
 
 import lombok.Data;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Data
 @Entity
@@ -38,11 +37,4 @@ public class Project {
 
     @Column(name = "end_date_time")
     private LocalDateTime endDateTime;
-
-    @ManyToMany
-    @JoinTable(
-            name = "project_pm_user",
-            joinColumns = @JoinColumn(name = "project_id"),
-            inverseJoinColumns = @JoinColumn(name = "pm_user_id"))
-    private List<PmUser> members = new ArrayList<>();
 }

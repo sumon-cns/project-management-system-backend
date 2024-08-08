@@ -1,9 +1,9 @@
 package com.cnsbd.pms.project.repository;
 
-import com.cnsbd.pms.pmuser.entity.PmUser;
-
 import com.cnsbd.pms.project.entity.Project;
+
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -40,9 +40,6 @@ public interface ProjectRepository extends JpaRepository<Project, Integer> {
             @Param("start") LocalDateTime start,
             @Param("end") LocalDateTime end);
 
-    List<Project> findAllByMembersContainingOrOwnerIsAndStartDateTimeBetween(
-            PmUser member, PmUser owner, LocalDateTime from, LocalDateTime to);
-
     @Query(
             value =
                     """
@@ -60,4 +57,27 @@ public interface ProjectRepository extends JpaRepository<Project, Integer> {
             @Param("userId") Integer userId,
             @Param("from") LocalDateTime from,
             @Param("to") LocalDateTime to);
+
+    @Query(
+            value = "select count(*) from project_pm_user where project_id=:projectId",
+            nativeQuery = true)
+    int countExistingUsers(@Param("projectId") Integer projectId);
+
+    @Modifying
+    @Query(
+            value =
+                    """
+                            insert into project_pm_user(project_id, pm_user_id) values (:projectId, :userId)
+                            """,
+            nativeQuery = true)
+    void addUserToProject(@Param("projectId") Integer projectId, @Param("userId") Integer userId);
+
+    @Modifying
+    @Query(
+            value =
+                    """
+                            delete from project_pm_user pu where pu.project_id=:projectId
+                            """,
+            nativeQuery = true)
+    void deleteAllUsersFromProject(@Param("projectId") Integer projectId);
 }
