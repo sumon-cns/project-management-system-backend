@@ -218,15 +218,11 @@ public class ProjectServiceImpl implements ProjectService {
         dto.setOwner(modelMapper.map(project.getOwner(), PmUserDto.class));
 
         dto.setOwnerId(project.getOwner().getId());
-        dto.setMemberIds(
-                pmUserRepository.findUsersByProjectId(project.getId()).stream()
-                        .map(PmUser::getId)
-                        .toList());
 
+        List<PmUser> members = pmUserRepository.findUsersByProjectId(project.getId());
+        dto.setMemberIds(members.stream().map(PmUser::getId).toList());
         dto.setMembers(
-                pmUserRepository.findUsersByProjectId(project.getId()).stream()
-                        .map(user -> modelMapper.map(user, PmUserDto.class))
-                        .toList());
+                members.stream().map(user -> modelMapper.map(user, PmUserDto.class)).toList());
         return dto;
     }
 
