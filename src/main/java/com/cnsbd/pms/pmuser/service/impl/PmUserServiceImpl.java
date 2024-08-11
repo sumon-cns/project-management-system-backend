@@ -43,10 +43,11 @@ public class PmUserServiceImpl implements PmUserService {
 
     @Override
     public List<PmUserDto> getAvailableUsers(Integer projectId) {
+        String message = "No project found with id: " + projectId + " to load available member(s)";
         Project project =
                 projectRepository
                         .findById(projectId)
-                        .orElseThrow(() -> new ProjectNotFoundException("Project not found"));
+                        .orElseThrow(() -> new ProjectNotFoundException(message));
         List<PmUser> existingUsers = pmUserRepository.findUsersByProjectId(projectId);
         List<PmUser> users =
                 pmUserRepository.findAll().stream()
