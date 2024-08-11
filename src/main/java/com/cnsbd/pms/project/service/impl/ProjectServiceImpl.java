@@ -210,6 +210,22 @@ public class ProjectServiceImpl implements ProjectService {
         return JasperExportManager.exportReportToPdf(jasperPrint);
     }
 
+    @Override
+    @Transactional
+    public void removeUser(Integer projectId, Integer userId) {
+        projectRepository
+                .findById(projectId)
+                .orElseThrow(
+                        () ->
+                                new ProjectNotFoundException(
+                                        "No project found with id: " + projectId));
+        List<PmUser> existingUsers = pmUserRepository.findUsersByProjectId(projectId);
+        if (existingUsers.stream().filter(u -> u.getId().equals(userId)).findAny().isEmpty()) {
+            throw new UserNotFoundException("User is not a member of this project.");
+        }
+        projectRepository.deleteUserFromProject(projectId, userId);
+    }
+
     private ProjectDto mapProjectToDto(Project project) {
         ProjectDto dto = modelMapper.map(project, ProjectDto.class);
         dto.setStartDateTime(project.getStartDateTime());

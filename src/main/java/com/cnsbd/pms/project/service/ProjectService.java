@@ -22,4 +22,6 @@ public interface ProjectService {
     ProjectDto getProject(Integer projectId);
 
     byte[] getReport(Integer userId, LocalDateTime fromDate, LocalDateTime toDate);
+
+    void removeUser(Integer projectId, Integer userId);
 }

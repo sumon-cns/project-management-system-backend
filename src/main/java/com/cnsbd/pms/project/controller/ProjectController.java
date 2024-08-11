@@ -52,6 +52,15 @@ public class ProjectController {
     }
 
     @Operation(
+            summary = "Remove member",
+            description = "Remove and existing member from an existing project")
+    @DeleteMapping(value = "/projects/{projectId}/users/{userId}")
+    public String removeUser(@PathVariable Integer projectId, @PathVariable Integer userId) {
+        projectService.removeUser(projectId, userId);
+        return "Member removed successfully";
+    }
+
+    @Operation(
             summary = "Get all projects",
             description = "get all projects for specific user and a date range")
     @GetMapping(value = "/users/{userId}/projects")

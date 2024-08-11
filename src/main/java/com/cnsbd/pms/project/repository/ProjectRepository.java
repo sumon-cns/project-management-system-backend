@@ -80,4 +80,14 @@ public interface ProjectRepository extends JpaRepository<Project, Integer> {
                             """,
             nativeQuery = true)
     void deleteAllUsersFromProject(@Param("projectId") Integer projectId);
+
+    @Modifying
+    @Query(
+            value =
+                    """
+                            delete from project_pm_user pu where pu.project_id=:projectId and pu.pm_user_id=:userId
+                            """,
+            nativeQuery = true)
+    void deleteUserFromProject(
+            @Param("projectId") Integer projectId, @Param("userId") Integer userId);
 }
